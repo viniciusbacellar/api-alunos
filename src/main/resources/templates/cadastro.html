@@ -1,11 +1,50 @@
-<html>
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
 
 <head>
-<title>Cadastro de Alunos</title>
+	<title>Cadastro de Alunos</title>
 </head>
 
 
 <header>
+	<form  method="post">
+		<div>
+			<label for="nome">Nome:</label>
+			<input type="text" id="nome" name="nome" placeholder="Nome *"/>
+		</div>
+		<div>
+			<label for="turma">Turma:</label>
+			<input type="text" id="turma" name="turma" placeholder="Turma *"/>
+		</div>
+		<div>
+			<label for="idade">Idade:</label>
+			<input type="number" id="idade" name="idade" placeholder="Idade *"/>
+		</div>
+		<div class="button">
+			<button type="submit">Enviar dados</button>
+		</div>
+	</form>
+
+	<div th:each="aluno : ${alunos}">
+		<p>
+			<p>
+				<span>Id: <span th:text="${aluno.id}"></span></span>
+			</p>
+		
+			<p>
+				<span>Nome: <span th:text="${aluno.nome}"></span></span>
+			</p>
+			
+			<p>
+				<span>Turma: <span th:text="${aluno.turma}"></span></span>
+			</p>
+			
+			<p>
+				<span>Idade: <span th:text="${aluno.idade}"></span></span>
+			</p>
+			<hr>
+		</p>
+</div>
 </header>
 
 
