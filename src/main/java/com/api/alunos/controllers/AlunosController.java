@@ -60,8 +60,7 @@ public class AlunosController {
 		return alunosRepository.findById(id)
 				.map(record -> {
 					record.setNome(aluno.getNome());
-					record.setTurma(aluno.getTurma());
-					record.setIdade(aluno.getIdade());
+					record.setDataDeNascimento(aluno.getDataDeNascimento());
 					Alunos updated = alunosRepository.save(record);
 					return ResponseEntity.ok().body(updated);
 				}).orElse(ResponseEntity.notFound().build());

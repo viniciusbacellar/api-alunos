@@ -1,41 +1,42 @@
 package com.api.alunos.entities;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 @Entity
-@Table(name = "tb_alunos")
-public class Alunos implements Serializable{
+@Table(name = "tb_escola")
+public class Escola implements Serializable{
 	private static final long serialVersionUID = 1L;
-	
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", timezone = "GMT")
-	private Date dataDeNascimento;
 	
-	@ManyToOne
-	private Turma turma;
+	@OneToOne(mappedBy = "escola", cascade = CascadeType.ALL)
+	private Endereco endereco;
 	
-	public Alunos() {
+	@OneToMany(mappedBy = "escola")
+	private List<Turma> listTurma = new ArrayList<>();
+	
+	public Escola() {
 	}
 
-	public Alunos(Integer id, String nome, Date dataDeNascimento) {
+	public Escola(Integer id, String nome, Endereco endereco) {
 		this.id = id;
 		this.nome = nome;
-		this.dataDeNascimento = dataDeNascimento;
+		this.endereco = endereco;
 	}
 
 	public Integer getId() {
@@ -54,20 +55,16 @@ public class Alunos implements Serializable{
 		this.nome = nome;
 	}
 
-	public Date getDataDeNascimento() {
-		return dataDeNascimento;
+	public Endereco getEndereco() {
+		return endereco;
 	}
 
-	public void setDataDeNascimento(Date dataDeNascimento) {
-		this.dataDeNascimento = dataDeNascimento;
-	}
-	
-	public Turma getTurma() {
-		return turma;
+	public void setEndereco(Endereco endereco) {
+		this.endereco = endereco;
 	}
 
-	public void setTurma(Turma turma) {
-		this.turma = turma;
+	public List<Turma> getListTurma() {
+		return listTurma;
 	}
 
 	@Override
@@ -83,12 +80,11 @@ public class Alunos implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Alunos other = (Alunos) obj;
-		return Objects.equals(id, other.id);
+		Escola other = (Escola) obj;
+		return id == other.id;
 	}
 
 	
 	
-	
-	
+
 }
