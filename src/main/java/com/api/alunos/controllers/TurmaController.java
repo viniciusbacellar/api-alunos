@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.api.alunos.entities.Escola;
 import com.api.alunos.entities.Turma;
+import com.api.alunos.repositories.EscolaRepository;
 import com.api.alunos.repositories.TurmaRepository;
 
 @RestController
@@ -26,30 +28,36 @@ public class TurmaController {
 	@Autowired
 	private TurmaRepository turmaRepository;
 	
+	@Autowired
+	private EscolaRepository escolaRepository;
+	
 	@GetMapping("/turma")
-	public List<Turma> findAll() {
-		return turmaRepository.findAll();
+	public ResponseEntity<List<Turma>> findAll() {
+		return ResponseEntity.ok().body(turmaRepository.findAll());
 	}
 	
 	@GetMapping("/turma/{id}")
-	public Optional<Turma> turmaUnica(@PathVariable Integer id) {
-		return turmaRepository.findById(id);
+	public ResponseEntity<Optional<Turma>> turmaUnica(@PathVariable Integer id) {
+		return ResponseEntity.ok().body(turmaRepository.findById(id));
 	}
 	
-	@PostMapping("/turma")
-	public Turma salvaTurma(@RequestBody Turma turma) {
-		return turmaRepository.save(turma);
+	@PostMapping("/turma/{id}")
+	@Transactional
+	public ResponseEntity<Turma> salvaTurma(@PathVariable Integer id, @RequestBody Turma turma) {
+		Escola escola = escolaRepository.getById(id);
+		turma.setEscola(escola);
+		return ResponseEntity.ok().body(turmaRepository.save(turma));
 	}
 	
 	@DeleteMapping("/turma/{id}")
 	@Transactional
-	public ResponseEntity<Void> delete(@PathVariable Integer id) {
+	public ResponseEntity<Void> deletaTurma(@PathVariable Integer id) {
 		turmaRepository.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@PutMapping("/turma/{id}")
-	public ResponseEntity<Turma> atualizaAluno(@PathVariable Integer id, @RequestBody Turma turma) {
+	public ResponseEntity<Turma> atualizaTurma(@PathVariable Integer id, @RequestBody Turma turma) {
 		return turmaRepository.findById(id)
 				.map(record -> {
 					if(turma.getNome() != null)

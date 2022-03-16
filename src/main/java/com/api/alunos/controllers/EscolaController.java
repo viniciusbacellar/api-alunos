@@ -27,30 +27,30 @@ public class EscolaController {
 	private EscolaRepository escolaRepository;
 	
 	@GetMapping("/escola")
-	public List<Escola> findAll() {
-		return escolaRepository.findAll();
+	public ResponseEntity<List<Escola>> findAll() {
+		return ResponseEntity.ok().body(escolaRepository.findAll());
 	}
 	
 	@GetMapping("/escola/{id}")
-	public Optional<Escola> escolaUnica(@PathVariable Integer id) {
-		return escolaRepository.findById(id);
+	public ResponseEntity<Optional<Escola>> escolaUnica(@PathVariable Integer id) {
+		return ResponseEntity.ok().body(escolaRepository.findById(id));
 	}
 	
 	@PostMapping("/escola")
 	@Transactional
-	public Escola salvaEscola(@RequestBody Escola escola) {
-		return escolaRepository.save(escola);
+	public ResponseEntity<Escola> salvaEscola(@RequestBody Escola escola) {
+		return ResponseEntity.ok().body(escolaRepository.save(escola));
 	}
 	
 	@DeleteMapping("/escola/{id}")
 	@Transactional
-	public ResponseEntity<Void> delete(@PathVariable Integer id) {
+	public ResponseEntity<Void> deletaEscola(@PathVariable Integer id) {
 		escolaRepository.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@PutMapping("/escola/{id}")
-	public ResponseEntity<Escola> atualizaAluno(@PathVariable Integer id, @RequestBody Escola escola) {
+	public ResponseEntity<Escola> atualizaEscola(@PathVariable Integer id, @RequestBody Escola escola) {
 		return escolaRepository.findById(id)
 				.map(record -> {
 					if(escola.getNome() != null)
