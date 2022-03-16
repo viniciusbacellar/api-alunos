@@ -24,10 +24,11 @@ public class Escola implements Serializable{
 	private Integer id;
 	private String nome;
 	
-	@OneToOne(mappedBy = "escola", cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private Endereco endereco;
 	
-	@OneToMany(mappedBy = "escola")
+	
+	@OneToMany(mappedBy = "escola", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Turma> listTurma = new ArrayList<>();
 	
 	public Escola() {

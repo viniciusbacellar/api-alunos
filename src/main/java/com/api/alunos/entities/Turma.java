@@ -5,13 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tb_turma")
@@ -22,22 +26,24 @@ public class Turma implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
-	private int capacidade;
+	private Integer capacidade;
 	
-	@ManyToOne
-	private Escola escola;
-	
-	@OneToMany(mappedBy = "turma")
+	@OneToMany(mappedBy = "turma", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Alunos> listAluno = new ArrayList<>();
+	
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name = "escola_id")
+	private Escola escola;
 	
 	public Turma() {
 	}
 
-	
-	public Turma(Integer id, String nome, int capacidade) {
+	public Turma(Integer id, String nome, int capacidade, Escola escola) {
 		this.id = id;
 		this.nome = nome;
 		this.capacidade = capacidade;
+		this.escola = escola;
 	}
 
 
@@ -58,11 +64,11 @@ public class Turma implements Serializable{
 		this.nome = nome;
 	}
 
-	public int getCapacidade() {
+	public Integer getCapacidade() {
 		return capacidade;
 	}
 
-	public void setCapacidade(int capacidade) {
+	public void setCapacidade(Integer capacidade) {
 		this.capacidade = capacidade;
 	}
 
@@ -74,11 +80,9 @@ public class Turma implements Serializable{
 		return escola;
 	}
 
-
 	public void setEscola(Escola escola) {
 		this.escola = escola;
 	}
-
 
 	@Override
 	public int hashCode() {
@@ -96,7 +100,5 @@ public class Turma implements Serializable{
 		Turma other = (Turma) obj;
 		return id == other.id;
 	}
-	
-	
-	
+
 }

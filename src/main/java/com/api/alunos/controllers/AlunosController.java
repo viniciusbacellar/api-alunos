@@ -29,43 +29,43 @@ public class AlunosController {
 
 	@Autowired
 	private AlunosRepository alunosRepository;
-	
+
 	@ApiOperation(value = "Retorna uma lista de alunos")
 	@GetMapping("/alunos")
 	public List<Alunos> findAll() {
 		return alunosRepository.findAll();
 	}
-	
+
 	@ApiOperation(value = "Retorna um unico aluno")
 	@GetMapping("/alunos/{id}")
-	public Optional<Alunos> alunoUnico(@PathVariable Long id) {
+	public Optional<Alunos> alunoUnico(@PathVariable Integer id) {
 		return alunosRepository.findById(id);
 	}
-	
+
 	@ApiOperation(value = "Salva um aluno")
 	@PostMapping("/alunos")
 	public Alunos salvaAluno(@RequestBody Alunos aluno) {
 		return alunosRepository.save(aluno);
 	}
-	
+
 	@ApiOperation(value = "Deleta um aluno")
 	@DeleteMapping("/alunos/{id}")
-	public void deletaAluno(@PathVariable Long id, @RequestBody Alunos aluno) {
-		alunosRepository.delete(aluno);
+	public ResponseEntity<Void> delete(@PathVariable Integer id) {
+		alunosRepository.deleteById(id);
+		return ResponseEntity.noContent().build();
 	}
-	
-	@ApiOperation(value = "Atualiza um aluno")
+
+	@ApiOperation(value = "Atualiza os dados do aluno")
 	@PutMapping("/alunos/{id}")
-	public ResponseEntity<Alunos> atualizaAluno(@PathVariable Long id, @RequestBody Alunos aluno) {
-		return alunosRepository.findById(id)
-				.map(record -> {
-					record.setNome(aluno.getNome());
-					record.setDataDeNascimento(aluno.getDataDeNascimento());
-					Alunos updated = alunosRepository.save(record);
-					return ResponseEntity.ok().body(updated);
-				}).orElse(ResponseEntity.notFound().build());
+	public ResponseEntity<Alunos> atualizaAluno(@PathVariable Integer id, @RequestBody Alunos aluno) {
+		return alunosRepository.findById(id).map(record -> {
+			if (aluno.getNome() != null)
+				record.setNome(aluno.getNome());
+			if (aluno.getDataDeNascimento() != null)
+				record.setDataDeNascimento(aluno.getDataDeNascimento());
+			Alunos updated = alunosRepository.save(record);
+			return ResponseEntity.ok().body(updated);
+		}).orElse(ResponseEntity.notFound().build());
 	}
-	
-	
-	
+
 }

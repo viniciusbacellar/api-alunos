@@ -16,48 +16,50 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.api.alunos.entities.Turma;
-import com.api.alunos.repositories.TurmaRepository;
+import com.api.alunos.entities.Escola;
+import com.api.alunos.repositories.EscolaRepository;
 
 @RestController
 @RequestMapping(value = "/api")
-public class TurmaController {
+public class EscolaController {
 
 	@Autowired
-	private TurmaRepository turmaRepository;
+	private EscolaRepository escolaRepository;
 	
-	@GetMapping("/turma")
-	public List<Turma> findAll() {
-		return turmaRepository.findAll();
+	@GetMapping("/escola")
+	public List<Escola> findAll() {
+		return escolaRepository.findAll();
 	}
 	
-	@GetMapping("/turma/{id}")
-	public Optional<Turma> turmaUnica(@PathVariable Integer id) {
-		return turmaRepository.findById(id);
+	@GetMapping("/escola/{id}")
+	public Optional<Escola> escolaUnica(@PathVariable Integer id) {
+		return escolaRepository.findById(id);
 	}
 	
-	@PostMapping("/turma")
-	public Turma salvaTurma(@RequestBody Turma turma) {
-		return turmaRepository.save(turma);
+	@PostMapping("/escola")
+	@Transactional
+	public Escola salvaEscola(@RequestBody Escola escola) {
+		return escolaRepository.save(escola);
 	}
 	
-	@DeleteMapping("/turma/{id}")
+	@DeleteMapping("/escola/{id}")
 	@Transactional
 	public ResponseEntity<Void> delete(@PathVariable Integer id) {
-		turmaRepository.deleteById(id);
+		escolaRepository.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
 	
-	@PutMapping("/turma/{id}")
-	public ResponseEntity<Turma> atualizaAluno(@PathVariable Integer id, @RequestBody Turma turma) {
-		return turmaRepository.findById(id)
+	@PutMapping("/escola/{id}")
+	public ResponseEntity<Escola> atualizaAluno(@PathVariable Integer id, @RequestBody Escola escola) {
+		return escolaRepository.findById(id)
 				.map(record -> {
-					if(turma.getNome() != null)
-					record.setNome(turma.getNome());
-					if(turma.getCapacidade() != null)
-					record.setCapacidade(turma.getCapacidade());
-					Turma updated = turmaRepository.save(record);
+					if(escola.getNome() != null)
+					record.setNome(escola.getNome());
+					if(escola.getEndereco() != null)
+					record.setEndereco(escola.getEndereco());
+					Escola updated = escolaRepository.save(record);
 					return ResponseEntity.ok().body(updated);
 				}).orElse(ResponseEntity.notFound().build());
 	}
+	
 }
