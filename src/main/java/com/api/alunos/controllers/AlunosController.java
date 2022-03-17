@@ -37,13 +37,13 @@ public class AlunosController {
 	private TurmaRepository turmaRepository;
 	
 
-	@ApiOperation(value = "Retorna uma lista de alunos")
+	@ApiOperation(value = "Retorna uma lista de todos os alunos")
 	@GetMapping("/alunos")
 	public ResponseEntity<List<Alunos>> findAll() {
 		return ResponseEntity.status(HttpStatus.OK).body(alunosRepository.findAll());
 	}
 
-	@ApiOperation(value = "Retorna um unico aluno")
+	@ApiOperation(value = "Retorna um unico aluno especificando o ID")
 	@GetMapping("/alunos/{id}")
 	public ResponseEntity<Object> alunoUnico(@PathVariable Integer id) {
 		Optional<Alunos> alunoOptional = alunosRepository.findById(id);
@@ -53,12 +53,6 @@ public class AlunosController {
 		return ResponseEntity.status(HttpStatus.OK).body(alunosRepository.findById(id));
 	}
 
-	@ApiOperation(value = "Salva um aluno")
-	@PostMapping("/alunos")
-	public ResponseEntity<Alunos> salvaAluno(@RequestBody Alunos aluno) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(alunosRepository.save(aluno));
-	}
-	
 	@ApiOperation(value = "Salva um aluno em uma determinada turma com base no ID digitado")
 	@PostMapping("/alunos/{id}")
 	public ResponseEntity<Object> salvaAlunoNaTurma(@PathVariable Integer id, @RequestBody Alunos aluno) {
@@ -72,7 +66,7 @@ public class AlunosController {
 	}
 	
 
-	@ApiOperation(value = "Deleta um aluno")
+	@ApiOperation(value = "Deleta um aluno especificando o ID")
 	@DeleteMapping("/alunos/{id}")
 	public ResponseEntity<Object> deletaAluno(@PathVariable Integer id) {
 		Optional<Alunos> alunoOptional = alunosRepository.findById(id);
@@ -83,7 +77,7 @@ public class AlunosController {
 		return ResponseEntity.status(HttpStatus.OK).body("Aluno deletado com sucesso.");
 	}
 
-	@ApiOperation(value = "Atualiza os dados do aluno")
+	@ApiOperation(value = "Atualiza os dados do aluno especificando o ID")
 	@PutMapping("/alunos/{id}")
 	public ResponseEntity<Alunos> atualizaAluno(@PathVariable Integer id, @RequestBody Alunos aluno) {
 		return alunosRepository.findById(id).map(record -> {
