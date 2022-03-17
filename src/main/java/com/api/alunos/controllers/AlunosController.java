@@ -61,7 +61,11 @@ public class AlunosController {
 	
 	@ApiOperation(value = "Salva um aluno em uma determinada turma com base no ID digitado")
 	@PostMapping("/alunos/{id}")
-	public ResponseEntity<Alunos> salvaAlunoNaTurma(@PathVariable Integer id, @RequestBody Alunos aluno) {
+	public ResponseEntity<Object> salvaAlunoNaTurma(@PathVariable Integer id, @RequestBody Alunos aluno) {
+		Optional<Turma> turmaOptional = turmaRepository.findById(id);
+		if(!turmaOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Turma não encontrada.");
+		}
 		Turma turma = turmaRepository.getById(id);
 		aluno.setTurma(turma);
 		return ResponseEntity.status(HttpStatus.CREATED).body(alunosRepository.save(aluno));

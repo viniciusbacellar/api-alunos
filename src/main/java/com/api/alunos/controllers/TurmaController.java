@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,27 +34,39 @@ public class TurmaController {
 	
 	@GetMapping("/turma")
 	public ResponseEntity<List<Turma>> findAll() {
-		return ResponseEntity.ok().body(turmaRepository.findAll());
+		return ResponseEntity.status(HttpStatus.OK).body(turmaRepository.findAll());
 	}
 	
 	@GetMapping("/turma/{id}")
-	public ResponseEntity<Optional<Turma>> turmaUnica(@PathVariable Integer id) {
-		return ResponseEntity.ok().body(turmaRepository.findById(id));
+	public ResponseEntity<Object> turmaUnica(@PathVariable Integer id) {
+		Optional<Turma> turmaOptional = turmaRepository.findById(id);
+		if(!turmaOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Turma não encontrada.");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(turmaRepository.findById(id));
 	}
 	
 	@PostMapping("/turma/{id}")
 	@Transactional
-	public ResponseEntity<Turma> salvaTurma(@PathVariable Integer id, @RequestBody Turma turma) {
+	public ResponseEntity<Object> salvaTurma(@PathVariable Integer id, @RequestBody Turma turma) {
+		Optional<Escola> escolaOptional = escolaRepository.findById(id);
+		if(!escolaOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Escola não encontrada.");
+		}
 		Escola escola = escolaRepository.getById(id);
 		turma.setEscola(escola);
-		return ResponseEntity.ok().body(turmaRepository.save(turma));
+		return ResponseEntity.status(HttpStatus.CREATED).body(turmaRepository.save(turma));
 	}
 	
 	@DeleteMapping("/turma/{id}")
 	@Transactional
-	public ResponseEntity<Void> deletaTurma(@PathVariable Integer id) {
+	public ResponseEntity<Object> deletaTurma(@PathVariable Integer id) {
+		Optional<Turma> turmaOptional = turmaRepository.findById(id);
+		if(!turmaOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Turma não encontrada.");
+		}
 		turmaRepository.deleteById(id);
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.status(HttpStatus.OK).body("Turma deletada com sucesso.");
 	}
 	
 	@PutMapping("/turma/{id}")
@@ -65,7 +78,7 @@ public class TurmaController {
 					if(turma.getCapacidade() != null)
 					record.setCapacidade(turma.getCapacidade());
 					Turma updated = turmaRepository.save(record);
-					return ResponseEntity.ok().body(updated);
+					return ResponseEntity.status(HttpStatus.OK).body(updated);
 				}).orElse(ResponseEntity.notFound().build());
 	}
 }

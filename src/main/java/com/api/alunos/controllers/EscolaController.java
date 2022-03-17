@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,25 +29,33 @@ public class EscolaController {
 	
 	@GetMapping("/escola")
 	public ResponseEntity<List<Escola>> findAll() {
-		return ResponseEntity.ok().body(escolaRepository.findAll());
+		return ResponseEntity.status(HttpStatus.OK).body(escolaRepository.findAll());
 	}
 	
 	@GetMapping("/escola/{id}")
-	public ResponseEntity<Optional<Escola>> escolaUnica(@PathVariable Integer id) {
-		return ResponseEntity.ok().body(escolaRepository.findById(id));
+	public ResponseEntity<Object> escolaUnica(@PathVariable Integer id) {
+		Optional<Escola> escolaOptional = escolaRepository.findById(id);
+		if(!escolaOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Escola não encontrada.");
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(escolaRepository.findById(id));
 	}
 	
 	@PostMapping("/escola")
 	@Transactional
 	public ResponseEntity<Escola> salvaEscola(@RequestBody Escola escola) {
-		return ResponseEntity.ok().body(escolaRepository.save(escola));
+		return ResponseEntity.status(HttpStatus.CREATED).body(escolaRepository.save(escola));
 	}
 	
 	@DeleteMapping("/escola/{id}")
 	@Transactional
-	public ResponseEntity<Void> deletaEscola(@PathVariable Integer id) {
+	public ResponseEntity<Object> deletaEscola(@PathVariable Integer id) {
+		Optional<Escola> escolaOptional = escolaRepository.findById(id);
+		if(!escolaOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Escola não encontrada.");
+		}
 		escolaRepository.deleteById(id);
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.status(HttpStatus.OK).body("Escola deletada com sucesso.");
 	}
 	
 	@PutMapping("/escola/{id}")
@@ -58,7 +67,7 @@ public class EscolaController {
 					if(escola.getEndereco() != null)
 					record.setEndereco(escola.getEndereco());
 					Escola updated = escolaRepository.save(record);
-					return ResponseEntity.ok().body(updated);
+					return ResponseEntity.status(HttpStatus.OK).body(updated);
 				}).orElse(ResponseEntity.notFound().build());
 	}
 	
