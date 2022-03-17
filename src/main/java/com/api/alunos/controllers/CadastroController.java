@@ -1,5 +1,6 @@
 package com.api.alunos.controllers;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class CadastroController {
 	
 	@RequestMapping(value = "/cadastro", method = RequestMethod.POST)
 	public String saveAluno(Alunos aluno, BindingResult result, RedirectAttributes attributes) {
+		attributes.addAttribute("dataDeNascimento", aluno.getDataDeNascimento());
 		alunosRepository.save(aluno);
 		return "redirect:/cadastro";
 	}

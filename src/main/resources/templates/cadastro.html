@@ -14,7 +14,7 @@
 		</div>
 		<div>
 			<label for="dataDeNascimento">Data de Nascimento:</label>
-			<input type="date" th:value="${dataDeNascimento}" />
+			<input type="text" id="dataDeNascimento" name="dataDeNascimento" placeholder="DD-MM-YYYY"/>
 		</div>
 		<div class="button">
 			<button type="submit">Enviar dados</button>
@@ -32,7 +32,7 @@
 			</p>
 			
 			<p>
-				<span>Data de Nascimento: <span th:text="${aluno.dataDeNascimento}"></span></span>
+				<span>Data de Nascimento: <span th:text="${#temporals.format(aluno.dataDeNascimento,'dd-MM-yyyy')}"></span></span>
 			</p>
 			
 			<hr>
