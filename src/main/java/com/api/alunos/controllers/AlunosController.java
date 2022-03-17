@@ -3,6 +3,8 @@ package com.api.alunos.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +53,13 @@ public class AlunosController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Aluno não encontrado.");
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(alunosRepository.findById(id));
+	}
+	
+	@ApiOperation(value = "Salva um novo aluno")
+	@PostMapping("/alunos")
+	@Transactional
+	public ResponseEntity<Alunos> salvaAlunos(@RequestBody Alunos alunos) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(alunosRepository.save(alunos));
 	}
 
 	@ApiOperation(value = "Salva um aluno em uma determinada turma com base no ID digitado")

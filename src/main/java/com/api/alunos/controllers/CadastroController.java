@@ -19,7 +19,7 @@ public class CadastroController {
 	@Autowired
 	private AlunosRepository alunosRepository;
 	
-	@RequestMapping(value = "/cadastro", method = RequestMethod.GET)
+	@RequestMapping(value = "/cadastros", method = RequestMethod.GET)
 	public ModelAndView getAlunos() {
 		ModelAndView mv = new ModelAndView("cadastro");
 		List<Alunos> alunos = alunosRepository.findAll();
@@ -30,7 +30,7 @@ public class CadastroController {
 	@RequestMapping(value = "/cadastro", method = RequestMethod.POST)
 	public String saveAluno(Alunos aluno, BindingResult result, RedirectAttributes attributes) {
 		alunosRepository.save(aluno);
-		return "redirect:/cadastro";
+		return "redirect:/cadastros";
 	}
 	
 }
